@@ -2,208 +2,219 @@
 {% load static %}
 {% load helpdesk_util %}
 
-<div class="card mb-3">
-    <!--div class="card-header">
-        {# trans "Ticket Summary" #}
-    </div -->
-    <div class="card-body">
+<div class="card mb-4 shadow-sm border-0">
+    <div class="card-body bg-white rounded">
         <div class="table-responsive">
-            <table class="table table-sm table-border">
+            <table class="table table-sm table-hover table-bordered rounded" style="overflow:hidden;">
                 <thead class="thead-light">
-                    <tr class=''>
-                        <th colspan='4'>
-                            <h3>{{ ticket.queue.slug }}-{{ ticket.id }}. {{ ticket.title }}</h3>
-                            {% blocktrans with ticket.queue as queue %}Queue: {{ queue }}{% endblocktrans %}
-                            <span class='d-flex ticket_toolbar float-right mr-2'>
-                                <a href="{% url 'helpdesk:edit' ticket.id %}" class="btn btn-warning btn-sm ticket-edit mx-2">
-                                    <i class="fas fa-pencil-alt"></i> {% trans "Edit" %}
-                                </a>
-                                | <a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-danger btn-sm ticket-delete mx-2">
-                                    <i class="fas fa-trash-alt"></i> {% trans "Delete" %}
-                                </a>
-                                | {% if ticket.on_hold %}
-                                    <form class="form-inline ticket-hold" method='post' action='unhold/'>
-                                        {% csrf_token %}
-                                        <button class="btn btn-warning btn-sm mx-2" type='submit'>
-                                            <i class="fas fa-play"></i> {% trans "Unhold" %}
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <form class="form-inline ticket-hold" method='post' action='hold/'>
-                                        {% csrf_token %}
-                                        <button class="btn btn-warning btn-sm mx-2" type='submit'>
-                                            <i class="fas fa-pause"></i> {% trans "Hold" %}
-                                        </button>
-                                    </form>
-                                {% endif %}
-                            </span>
+                    <tr>
+                        <th colspan="4" class="align-middle bg-light border-0 rounded-top">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                                <div>
+                                    <h3 class="mb-1">{{ ticket.queue.slug }}-{{ ticket.id }}. {{ ticket.title }}</h3>
+                                    <span class="text-muted small">
+                                        {% blocktrans with ticket.queue as queue %}Queue: {{ queue }}{% endblocktrans %}
+                                    </span>
+                                </div>
+                                <div class="d-flex ticket_toolbar flex-wrap align-items-center">
+                                    <a href="{% url 'helpdesk:edit' ticket.id %}" class="btn btn-outline-primary btn-sm ticket-edit mx-1 mb-1">
+                                        <i class="fas fa-pencil-alt"></i> {% trans "Edit" %}
+                                    </a>
+                                    <a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-outline-danger btn-sm ticket-delete mx-1 mb-1">
+                                        <i class="fas fa-trash-alt"></i> {% trans "Delete" %}
+                                    </a>
+                                    {% if ticket.on_hold %}
+                                        <form class="form-inline ticket-hold" method="post" action="unhold/">
+                                            {% csrf_token %}
+                                            <button class="btn btn-outline-primary btn-sm mx-1 mb-1" type="submit">
+                                                <i class="fas fa-play"></i> {% trans "Unhold" %}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <form class="form-inline ticket-hold" method="post" action="hold/">
+                                            {% csrf_token %}
+                                            <button class="btn btn-outline-primary btn-sm mx-1 mb-1" type="submit">
+                                                <i class="fas fa-pause"></i> {% trans "Hold" %}
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for customfield in ticket.ticketcustomfieldvalue_set.all %}
                         <tr>
-                            <th class="table-secondary">{{ customfield.field.label }}</th>
-                            <td>
-                                {% spaceless %}
-                                    {% if "url" == customfield.field.data_type %}
-                                        <a href='{{ customfield.value }}'>{{ customfield.value }}</a>
-                                    {% elif "datetime" == customfield.field.data_type %}
-                                        {{ customfield.value|datetime_string_format }}
-                                    {% elif "date" == customfield.field.data_type %}
-                                        {{ customfield.value|datetime_string_format }}
-                                    {% elif "time" == customfield.field.data_type %}
-                                        {{ customfield.value|datetime_string_format }}
-                                    {% else %}
-                                        {{ customfield.value|default:"" }}
-                                    {% endif %}
-                                {% endspaceless %}
+                            <th class="table-secondary border-0 rounded-left">{{ customfield.field.label }}</th>
+                            <td class="border-0">
+                                {% if "url" == customfield.field.data_type %}
+                                    <a href="{{ customfield.value }}">{{ customfield.value }}</a>
+                                {% elif "datetime" == customfield.field.data_type %}
+                                    {{ customfield.value|datetime_string_format }}
+                                {% elif "date" == customfield.field.data_type %}
+                                    {{ customfield.value|datetime_string_format }}
+                                {% elif "time" == customfield.field.data_type %}
+                                    {{ customfield.value|datetime_string_format }}
+                                {% else %}
+                                    {{ customfield.value|default:"" }}
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
                     <tr>
-                        <th class="table-active">{% trans "Due Date" %}</th>
+                        <th class="table-active bg-light">{% trans "Due Date" %}</th>
                         <td>
                             {{ ticket.due_date|date:"DATETIME_FORMAT" }}
                             {% if ticket.due_date %}({{ ticket.due_date|naturaltime }}){% endif %}
                         </td>
-                        <th class="table-active">{% trans "Submitted On" %}</th>
+                        <th class="table-active bg-light">{% trans "Submitted On" %}</th>
                         <td>{{ ticket.created|date:"DATETIME_FORMAT" }} ({{ ticket.created|naturaltime }})</td>
                     </tr>
                     <tr>
-                        <th class="table-active">{% trans "Assigned To" %}</th>
+                        <th class="table-active bg-light">{% trans "Assigned To" %}</th>
                         <td>
                             {{ ticket.get_assigned_to }}
                             {% if _('Unassigned') == ticket.get_assigned_to  %}
-                                <a class="btn btn-primary btn-sm float-right" data-toggle="tooltip" href='?take' title='{% trans "Assign this ticket to " %}{{ request.user.email }}'>
+                                <a class="btn btn-primary btn-sm float-right rounded-pill" data-toggle="tooltip" href="?take" title="{% trans 'Assign this ticket to ' %}{{ request.user.email }}">
                                     <i class="fas fa-hand-paper"></i>
                                 </a>
                             {% endif %}
                         </td>
-                        <th class="table-active">{% trans "Submitter E-Mail" %}</th>
+                        <th class="table-active bg-light">{% trans "Submitter E-Mail" %}</th>
                         <td>
                             {{ ticket.submitter_email }}
                             {% if user.is_superuser %}
                                 {% if submitter_userprofile_url %}
-                                    <a class="btn btn-primary btn-sm" data-toggle="tooltip" href='{{submitter_userprofile_url}}' title='{% trans "Edit " %}{{ ticket.submitter_email }}{% trans " user profile" %}'>
+                                    <a class="btn btn-primary btn-sm rounded-pill" data-toggle="tooltip" href="{{submitter_userprofile_url}}" title="{% trans 'Edit ' %}{{ ticket.submitter_email }}{% trans ' user profile' %}">
                                         <i class="fas fa-address-book"></i>
                                     </a>
                                 {% endif %}
-                                <a class="btn btn-primary btn-sm" data-toggle="tooltip" href ="{% url 'helpdesk:list'%}?q={{ticket.submitter_email}}" title='{% trans "Display tickets filtered for " %}{{ ticket.submitter_email }}{% trans " as a keyword" %}'>
+                                <a class="btn btn-primary btn-sm rounded-pill" data-toggle="tooltip" href="{% url 'helpdesk:list'%}?q={{ticket.submitter_email}}" title="{% trans 'Display tickets filtered for ' %}{{ ticket.submitter_email }}{% trans ' as a keyword' %}">
                                     <i class="fas fa-search"></i>
                                 </a>
-                                <a class="btn btn-warning btn-sm float-right" data-toggle="tooltip" href='{% url 'helpdesk:email_ignore_add' %}?email={{ ticket.submitter_email }}' title='{% trans "Add email address for the ticket system to ignore." %}'>
+                                <a class="btn btn-outline-warning btn-sm float-right rounded-pill" data-toggle="tooltip" href="{% url 'helpdesk:email_ignore_add' %}?email={{ ticket.submitter_email }}" title="{% trans 'Add email address for the ticket system to ignore.' %}">
                                     <i class="fas fa-eye-slash"></i>
                                 </a>
                             {% endif %}
                         </td>
                     </tr>
                     <tr>
-                        <th class="table-active">{% trans "Priority" %}</th>
+                        <th class="table-active bg-light">{% trans "Priority" %}</th>
                         <td class="{% if ticket.priority < 3 %}table-warning{% endif %}">
                             {{ ticket.get_priority_display }}
                         </td>
-                        <th class="table-active">{% trans "Copies To" %}</th>
+                        <th class="table-active bg-light">{% trans "Copies To" %}</th>
                         <td>
                             {{ ticketcc_string }}
-                            <a class="btn btn-warning btn-sm float-right" data-toggle='tooltip' href='{% url 'helpdesk:ticket_cc' ticket.id %}' title='{% trans "Click here to add / remove people who should receive an e-mail whenever this ticket is updated." %}'>
+                            <a class="btn btn-outline-warning btn-sm float-right rounded-pill" data-toggle="tooltip" href="{% url 'helpdesk:ticket_cc' ticket.id %}" title="{% trans 'Click here to add / remove people who should receive an e-mail whenever this ticket is updated.' %}">
                                 <i class="fa fa-share"></i>
                             </a>
                             {% if SHOW_SUBSCRIBE %}
-                                <a class="btn btn-warning btn-sm float-right" data-toggle='tooltip' href='?subscribe' title='{% trans "Click here to subscribe yourself to this ticket, if you want to receive an e-mail whenever this ticket is updated." %}'>
+                                <a class="btn btn-outline-warning btn-sm float-right rounded-pill" data-toggle="tooltip" href="?subscribe" title="{% trans 'Click here to subscribe yourself to this ticket, if you want to receive an e-mail whenever this ticket is updated.' %}">
                                     <i class="fas fa-rss-square"></i>
                                 </a>
                             {% endif %}
                         </td>
                     </tr>
-
-		    <tr>
-			<th class="table-active">{% trans "Status" %}</th>
-			<td>{{ ticket.get_status }}</td>
-                            {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}
-                                <th class="table-active">{% trans "Total time spent" %}</th>
-                                <td>{{ ticket.time_spent_formated }}</td>
-                            {% else %}
-                                <th class="table-active"></th>
-                                <td></td>
-                            {% endif %}
-		    </tr>
+                    <tr>
+                        <th class="table-active bg-light">{% trans "Status" %}</th>
+                        <td>{{ ticket.get_status }}</td>
+                        {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}
+                            <th class="table-active bg-light">{% trans "Total time spent" %}</th>
+                            <td>{{ ticket.time_spent_formated }}</td>
+                        {% else %}
+                            <th class="table-active bg-light"></th>
+                            <td></td>
+                        {% endif %}
+                    </tr>
                     {% if helpdesk_settings.HELPDESK_ENABLE_DEPENDENCIES_ON_TICKET != False %}
-		    <tr>
-			<th class="table-active">
-			    {% trans "Resolves" %}
-			    <a data-toggle='tooltip' href='{% url 'helpdesk:ticket_resolves_add' ticket.id %}'
-			       title='{% trans "Make this ticket resolve another ticket." %}'>
-				<button type="button" class="btn btn-primary btn-sm float-right"><i class="fas fa-link"></i></button></a>
-			</th>
-			<td colspan="3" class="p-0">
-			    {% for resolves in ticket.depends_on.all %}
-			    {% if forloop.first %}<table class="table table-borderless table-responsive m-0">{% endif %}
-				<tr>
-				    <td>
-					<a data-toggle='tooltip' href='{% url 'helpdesk:ticket_resolves_del' resolves.ticket.id resolves.id %}'
-					   title='{% trans "Drop the dependency on this ticket. A ticket may not be closed until all tickets it depends on are closed or removed." %}'>
-					    <button type="button" class="btn btn-warning btn-sm"><i class="fas fa-trash"></i></button></a>
-				    </td>
-				    <td>{{ resolves.ticket.get_status_display }}</td>
-				    <td>
-					<a href='{{ resolves.ticket.get_absolute_url }}'>{{ resolves.ticket.ticket }} {{ resolves.ticket.title }}</a>
-				    </td>
-				</tr>
-				{% if forloop.last %}</table>{% endif %}
-			    {% empty %}
-			    <small class="p-2">{% trans "This ticket does not resolve any other" %}</small>
-			    {% endfor %}
-			</td>
-		    </tr>
-		    <tr>
-			<th class="table-active">
-			    {% trans "Depends" %}
-			    <a data-toggle='tooltip' href='{% url 'helpdesk:ticket_dependency_add' ticket.id %}'
-			       title='{% trans "Make this ticket dependent on another ticket. A ticket may not be closed until all tickets it depends on are closed or removed." %}'>
-				<button type="button" class="btn btn-primary btn-sm float-right"><i class="fas fa-link"></i></button></a>
-			    
-			</th>
+                    <tr>
+                        <th class="table-active bg-light align-middle">
+                            {% trans "Resolves" %}
+                            <a data-toggle="tooltip" href="{% url 'helpdesk:ticket_resolves_add' ticket.id %}"
+                               title="{% trans 'Make this ticket resolve another ticket.' %}">
+                                <button type="button" class="btn btn-primary btn-sm float-right rounded-pill"><i class="fas fa-link"></i></button>
+                            </a>
+                        </th>
                         <td colspan="3" class="p-0">
-                            {% for dep in dependencies %}
-			    {% if forloop.first %}<table class="table table-borderless table-hover table-responsive m-0">{% endif %}
-				<tr>
-				    <td>
-					<a data-toggle='tooltip' href='{% url 'helpdesk:ticket_dependency_del' ticket.id dep.id %}'
-					   title='{% trans "Drop the dependency on this ticket. A ticket may not be closed until all tickets it depends on are closed or removed." %}'>
-					    <button type="button" class="btn btn-warning btn-sm"><i class="fas fa-trash"></i></button></a>
-				    </td>					
-				    <td>{{ dep.depends_on.get_status_display }}</td>
-				    <td>
-					<a href='{{ dep.depends_on.get_absolute_url }}'>{{ dep.depends_on.ticket }} {{ dep.depends_on.title }}</a>
-					
-				    </td>
-                                    {% if forloop.last %}</table>{% endif %}
+                            {% for resolves in ticket.depends_on.all %}
+                                {% if forloop.first %}
+                                <table class="table table-borderless table-responsive m-0">
+                                {% endif %}
+                                <tr>
+                                    <td>
+                                        <a data-toggle="tooltip" href="{% url 'helpdesk:ticket_resolves_del' resolves.ticket.id resolves.id %}"
+                                           title="{% trans 'Drop the dependency on this ticket. A ticket may not be closed until all tickets it depends on are closed or removed.' %}">
+                                            <button type="button" class="btn btn-warning btn-sm rounded-pill"><i class="fas fa-trash"></i></button>
+                                        </a>
+                                    </td>
+                                    <td>{{ resolves.ticket.get_status_display }}</td>
+                                    <td>
+                                        <a href="{{ resolves.ticket.get_absolute_url }}">{{ resolves.ticket.ticket }} {{ resolves.ticket.title }}</a>
+                                    </td>
+                                </tr>
+                                {% if forloop.last %}
+                                </table>
+                                {% endif %}
                             {% empty %}
-                            <small class="p-2">{% trans "This ticket has no dependencies." %}</small>
+                                <span class="text-muted small p-2">{% trans "This ticket does not resolve any other" %}</span>
                             {% endfor %}
                         </td>
-		    </tr>
-		    {% endif %}
+                    </tr>
+                    <tr>
+                        <th class="table-active bg-light align-middle">
+                            {% trans "Depends" %}
+                            <a data-toggle="tooltip" href="{% url 'helpdesk:ticket_dependency_add' ticket.id %}"
+                               title="{% trans 'Make this ticket dependent on another ticket. A ticket may not be closed until all tickets it depends on are closed or removed.' %}">
+                                <button type="button" class="btn btn-primary btn-sm float-right rounded-pill"><i class="fas fa-link"></i></button>
+                            </a>
+                        </th>
+                        <td colspan="3" class="p-0">
+                            {% for dep in dependencies %}
+                                {% if forloop.first %}
+                                <table class="table table-borderless table-hover table-responsive m-0">
+                                {% endif %}
+                                <tr>
+                                    <td>
+                                        <a data-toggle="tooltip" href="{% url 'helpdesk:ticket_dependency_del' ticket.id dep.id %}"
+                                           title="{% trans 'Drop the dependency on this ticket. A ticket may not be closed until all tickets it depends on are closed or removed.' %}">
+                                            <button type="button" class="btn btn-warning btn-sm rounded-pill"><i class="fas fa-trash"></i></button>
+                                        </a>
+                                    </td>
+                                    <td>{{ dep.depends_on.get_status_display }}</td>
+                                    <td>
+                                        <a href="{{ dep.depends_on.get_absolute_url }}">{{ dep.depends_on.ticket }} {{ dep.depends_on.title }}</a>
+                                    </td>
+                                </tr>
+                                {% if forloop.last %}
+                                </table>
+                                {% endif %}
+                            {% empty %}
+                                <span class="text-muted small p-2">{% trans "This ticket has no dependencies." %}</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endif %}
                     {% if ticket.kbitem %}
                         <tr>
-                            <th class="table-active">{% trans "Knowlegebase item" %}</th>
-                            <td> <a href ="{{ticket.kbitem.query_url}}"> {{ticket.kbitem}} </a> </td>
+                            <th class="table-active bg-light">{% trans "Knowlegebase item" %}</th>
+                            <td colspan="3"><a href="{{ticket.kbitem.query_url}}">{{ticket.kbitem}}</a></td>
                         </tr>
-		    {% endif %}
-		    {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
+                    {% endif %}
+                    {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
                     <tr>
-                        <th class="table-active">{% trans "Attachments" %}</th>
+                        <th class="table-active bg-light">{% trans "Attachments" %}</th>
                         <td colspan="3">
-                            <ul>
+                            <ul class="list-unstyled mb-0">
                             {% for followup in ticket.followup_set.all %}
                                 {% for attachment in followup.followupattachment_set.all %}
                                     <li>
-                                        <a href='{{ attachment.file.url }}'>
+                                        <a href="{{ attachment.file.url }}">
                                             {{ attachment.filename }}
                                         </a> ({{ attachment.mime_type }}, {{ attachment.size|filesizeformat }})
                                         {% if followup.user and request.user == followup.user %}
-                                            <a class="btn btn-danger btn-sm" href='{% url 'helpdesk:attachment_del' ticket.id attachment.id %}'>
+                                            <a class="btn btn-danger btn-sm rounded-pill" href="{% url 'helpdesk:attachment_del' ticket.id attachment.id %}">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         {% endif %}
@@ -215,31 +226,33 @@
                     </tr>
                     {% endif %}
                     <tr>
-                        <th class="table-active">{% trans "Checklists" %}</th>
+                        <th class="table-active bg-light">{% trans "Checklists" %}</th>
                         <td colspan="3">
-                            <div class="container-fluid">
+                            <div class="container-fluid px-0">
                                 <div class="row align-items-baseline">
                                     {% for checklist in ticket.checklists.all %}
-                                        <div class="col-sm-4 col-xs-12">
-                                            <div class="card mb-4">
-                                                <div class="card-header">
-                                                    <h5>
-                                                        <span data-toggle="collapse" data-target="#checklist{{ checklist.id }}" onclick="$(this).siblings('button').children('i').toggleClass('fa-caret-down fa-caret-up')">
+                                        <div class="col-md-4 col-12 mb-2">
+                                            <div class="card h-100 border-0 shadow-sm rounded">
+                                                <div class="card-header py-2 bg-light rounded-top">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <span data-toggle="collapse" data-target="#checklist{{ checklist.id }}" style="cursor:pointer;" onclick="$(this).siblings('button').children('i').toggleClass('fa-caret-down fa-caret-up')">
                                                             {{ checklist }}
                                                         </span>
-                                                        <a class="btn btn-link btn-sm" href="{% url 'helpdesk:edit_ticket_checklist' ticket.id checklist.id %}">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
-                                                        <button class="btn btn-secondary btn-sm float-right" data-toggle="collapse" data-target="#checklist{{ checklist.id }}" onclick="$(this).children('i').toggleClass('fa-caret-down fa-caret-up')">
-                                                            <i class="fas fa-caret-down"></i>
-                                                        </button>
-                                                    </h5>
+                                                        <div>
+                                                            <a class="btn btn-link btn-sm" href="{% url 'helpdesk:edit_ticket_checklist' ticket.id checklist.id %}">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <button class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#checklist{{ checklist.id }}" onclick="$(this).children('i').toggleClass('fa-caret-down fa-caret-up')">
+                                                                <i class="fas fa-caret-down"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="card-body collapse" id="checklist{{ checklist.id }}">
                                                     <div class="list-group">
                                                         {% for task in checklist.tasks.all %}
                                                             <div class="list-group-item"{% if task.completion_date %} title="{% trans "Completed on" %} {{ task.completion_date }}" {% endif %}>
-                                                                <label class="disabledTask">
+                                                                <label class="disabledTask mb-0">
                                                                     <input type="checkbox" disabled{% if task.completion_date %} checked{% endif %}>
                                                                     {{ task }}
                                                                 </label>
@@ -248,10 +261,10 @@
                                                     </div>
                                                 </div>
                                                 {% if checklist.tasks.completed.count %}
-                                                    <div class="card-footer">
-                                                        <div class="progress">
+                                                    <div class="card-footer py-1 bg-light rounded-bottom">
+                                                        <div class="progress" style="height: 18px;">
                                                             {% widthratio checklist.tasks.completed.count checklist.tasks.count 100 as width  %}
-                                                            <div class="progress-bar" role="progressbar" style="width: {{ width }}%" aria-valuenow="{{ width }}" aria-valuemin="0" aria-valuemax="100">
+                                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ width }}%" aria-valuenow="{{ width }}" aria-valuemin="0" aria-valuemax="100">
                                                                 {{ width }}%
                                                             </div>
                                                         </div>
@@ -260,8 +273,8 @@
                                             </div>
                                         </div>
                                     {% endfor %}
-                                    <div class="col-sm-4 col-xs-12">
-                                        <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#createChecklistModal">
+                                    <div class="col-md-4 col-12 mb-2">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary w-100 h-100 rounded" data-toggle="modal" data-target="#createChecklistModal">
                                             <i class="fas fa-plus"></i>
                                             {% trans "Create new checklist" %}
                                         </button>
@@ -271,40 +284,36 @@
                         </td>
                     </tr>
                     <tr>
-                        <td id="ticket-description" colspan='4'>
-                            <h4>{% trans "Description" %}</h4>
-                            {{ ticket.get_markdown|urlizetrunc:50|num_to_link }}
+                        <td id="ticket-description" colspan="4" class="bg-light rounded-bottom">
+                            <h4 class="mt-3">{% trans "Description" %}</h4>
+                            <div class="mb-2">{{ ticket.get_markdown|urlizetrunc:50|num_to_link }}</div>
                         </td>
                     </tr>
-
                     {% if ticket.resolution %}
                         <tr>
-                            <th colspan='4'>
+                            <th colspan="4" class="bg-light">
                                 {% trans "Resolution" %}
                                 {% if "Resolved" == ticket.get_status_display %}
-                                    <a href='?close'>
-                                        <button type="button" class="btn btn-warning btn-sm">
-                                        {% trans "Accept and Close" %}
+                                    <a href="?close">
+                                        <button type="button" class="btn btn-warning btn-sm rounded-pill">
+                                            {% trans "Accept and Close" %}
                                         </button>
                                     </a>
                                 {% endif %}
                             </th>
                         </tr>
                         <tr>
-                            <td colspan='4'>{{ ticket.get_resolution_markdown|urlizetrunc:50|linebreaksbr }}</td>
+                            <td colspan="4" class="bg-white">{{ ticket.get_resolution_markdown|urlizetrunc:50|linebreaksbr }}</td>
                         </tr>
                     {% endif %}
                 </tbody>
             </table>
-            <a href='#FurtherEditOptions'>
-                <button type="button" class="btn btn-sm btn-warning float-right" onclick="$('#FurtherEditOptions').fadeIn()">
+            <a href="#FurtherEditOptions">
+                <button type="button" class="btn btn-sm btn-outline-primary float-right " onclick="$('#FurtherEditOptions').fadeIn()">
                     <i class="fas fa-pencil-alt"></i>&nbsp;{% trans "Edit details" %}
                 </button>
             </a>
         </div>
-        <!-- /.table-responsive -->
     </div>
-    <!-- /.card-body -->
 </div>
-<!-- /.card -->
 
