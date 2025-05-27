@@ -1,26 +1,35 @@
 {% load i18n humanize %}
 {% load static %}
 {% load in_list %}
-<div class="form-row">
-    <div class="col col-sm-3">
-        <label for='id_owners' class="col-form-label">{% trans "Owner(s)" %}:</label>
+<div class="alert alert-dismissible fade show py-3 px-4 mb-3 shadow-sm border-0" role="alert" style="background-color: rgba(0,0,0,.06);">
+    <div class="form-row align-items-center">
+        <div class="col-auto pr-0">
+            <label for="id_owners" class="col-form-label font-weight-bold mb-0 text-uppercase small text-secondary">
+                <i class="fas fa-user mr-1"></i>{% trans "Owner(s)" %}:
+            </label>
+        </div>
+        <div class="col-auto">
+            <select id="id_owners" name="assigned_to" multiple="selected" size="5" class="custom-select custom-select-sm border-0 bg-light">
+                {% with magic_number=-1 %}
+                    <option value="{{magic_number}}"{% if query_params.filtering_null.assigned_to__id__isnull %} selected="selected"{% endif %}>
+                        {% trans "Unassigned" %}
+                    </option>
+                {% endwith %}
+                {% for u in user_choices %}
+                    <option value="{{ u.id }}"{% if u.id|in_list:query_params.filtering.assigned_to__id__in %} selected="selected"{% endif %}>
+                        {{ u.get_username }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="button" class="filterBuilderRemove close ml-3" data-dismiss="alert" aria-label="{% trans "Close" %}">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-    <div class="col col-sm-3">
-        <select id='id_owners' name='assigned_to' multiple='selected' size='5'>
-            {% with magic_number=-1 %}
-            <option value='{{magic_number}}'{% if query_params.filtering_null.assigned_to__id__isnull %} selected='selected'{% endif %}>
-                {% trans "Unassigned" %}
-            </option>
-            {% endwith %}
-            {% for u in user_choices %}
-            <option value='{{ u.id }}'{% if u.id|in_list:query_params.filtering.assigned_to__id__in %} selected='selected'{% endif %}>
-                {{ u.get_username }}
-            </option>
-            {% endfor %}
-        </select>
+    <hr class="my-2">
+    <div class="form-row">
+        <div class="col">
+            <small class="text-muted filterHelp">{% trans "Ctrl-Click to select multiple options" %}</small>
+        </div>
     </div>
-  <div class="col col-sm-6">
-    <button class="filterBuilderRemove btn btn-danger btn-sm float-right"><i class="fas fa-trash-alt"></i></button>
-  </div>
-  <div class='form-row filterHelp'>{% trans "Ctrl-Click to select multiple options" %}</div>
 </div>

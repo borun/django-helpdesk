@@ -1,39 +1,53 @@
 {% load i18n humanize %}
 {% load static %}
-  <div class="form-row">
-    <div class="col col-sm-3">
-      <label for='id_sort' class="col-form-label">{% trans "Sorting" %}:</label>
-    </div>
-    <div class="col col-sm-3">
-            <select id='id_sort' name='sort' class="">
-                <option value='created'{% if query_params.sorting == "created"%} selected='selected'{% endif %}>
+<div class="alert alert-dismissible fade show py-3 px-4 mb-3 shadow-sm border-0" role="alert" style="background-color: rgba(0,0,0,.06)">
+    <div class="form-row align-items-center">
+        <div class="col-auto pr-0">
+            <label for="id_sort" class="col-form-label font-weight-bold mb-0 text-uppercase small text-secondary">
+                <i class="fas fa-sort mr-1"></i>{% trans "Sorting" %}:
+            </label>
+        </div>
+        <div class="col-auto">
+            <select id="id_sort" name="sort" class="custom-select custom-select-sm border-0 bg-light">
+                <option value="created"{% if query_params.sorting == "created"%} selected="selected"{% endif %}>
                     {% trans "Created" %}
                 </option>
-                <option value='title'{% if query_params.sorting == "title"%} selected='selected'{% endif %}>
+                <option value="title"{% if query_params.sorting == "title"%} selected="selected"{% endif %}>
                     {% trans "Title" %}
                 </option>
-                <option value='queue'{% if query_params.sorting == "queue"%} selected='selected'{% endif %}>
+                <option value="queue"{% if query_params.sorting == "queue"%} selected="selected"{% endif %}>
                     {% trans "Queue" %}
                 </option>
-                <option value='status'{% if query_params.sorting == "status"%} selected='selected'{% endif %}>
+                <option value="status"{% if query_params.sorting == "status"%} selected="selected"{% endif %}>
                     {% trans "Status" %}
                 </option>
-                <option value='priority'{% if query_params.sorting == "priority"%} selected='selected'{% endif %}>
+                <option value="priority"{% if query_params.sorting == "priority"%} selected="selected"{% endif %}>
                     {% trans "Priority" %}
                 </option>
-                <option value='assigned_to'{% if query_params.sorting == "assigned_to"%} selected='selected'{% endif %}>
+                <option value="assigned_to"{% if query_params.sorting == "assigned_to"%} selected="selected"{% endif %}>
                     {% trans "Owner" %}
                 </option>
             </select>
-  </div>
-  <div class="col col-sm-2">
-    <label for='id_sortreverse' class="col-form-label">{% trans "Reverse" %}</label>
-  </div>
-  <div class="col col-sm-3">
-    <input type='checkbox' name='sortreverse' id='id_sortreverse'{% if query_params.sortreverse %} checked='checked'{% endif %} />
-  </div>
-  <div class="col col-sm-1">
-    <button class="filterBuilderRemove btn btn-danger btn-sm float-right"><i class="fas fa-trash-alt"></i></button>
-  </div>
-   <div class="form-row filterHelp">{% trans "Ordering applied to tickets" %}</div>
+        </div>
+        <div class="col-auto pr-0 pl-3">
+            <label for="id_sortreverse" class="col-form-label font-weight-bold mb-0 text-uppercase small text-secondary">
+                <i class="fas fa-exchange-alt mr-1"></i>{% trans "Reverse" %}
+            </label>
+        </div>
+        <div class="col-auto">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" name="sortreverse" id="id_sortreverse"{% if query_params.sortreverse %} checked="checked"{% endif %} />
+                <label class="custom-control-label" for="id_sortreverse"></label>
+            </div>
+        </div>
+        <button type="button" class="filterBuilderRemove close ml-3" data-dismiss="alert" aria-label="{% trans "Close" %}">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <hr class="my-2">
+    <div class="form-row">
+        <div class="col">
+            <small class="text-muted filterHelp">{% trans "Ordering applied to tickets" %}</small>
+        </div>
+    </div>
 </div>

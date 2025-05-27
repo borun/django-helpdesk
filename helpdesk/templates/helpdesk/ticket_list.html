@@ -149,49 +149,56 @@
             <div class="accordion" id="queryAccordion">
                 <div class="card">
                     <div class="card-header" id="headingOne">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link btn-sm" type="button" data-toggle="collapse"
-                                    data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <i class="fas fa-filter"></i>
-                                {% trans "Filters" %}
-                            </button>
-                        </h5>
+                        <div class="row align-items-center w-100">
+                            <div class="col-auto pr-0">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link btn-sm font-weight-bold text-primary" type="button" data-toggle="collapse"
+                                            data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <i class="fas fa-filter"></i>
+                                        {% trans "Filters" %}
+                                    </button>
+                                </h5>
+                            </div>
+                            <div class="col">
+                                <form method="get" class="form-inline justify-content-end">
+                                    <div class="form-group mb-0">
+                                        <label for="filterBuilderSelect" class="mr-2 font-weight-bold">{% trans "Add filter" %}:</label>
+                                        <select class="custom-select custom-select-sm mb-0 w-auto"
+                                                aria-describedby="select-description" name="select" id="filterBuilderSelect"
+                                                onChange="onFilterChange(this.value)">
+                                            <option value="">--</option>
+                                            <option id="filterBuilderSelect-Sort" value="Sort"{% if query_params.sorting %} disabled{% endif %}>
+                                                {% trans "Sorting" %}
+                                            </option>
+                                            <option id="filterBuilderSelect-Owner" value="Owner"{% if query_params.filtering.assigned_to__id__in or query_params.filtering_null.assigned_to__id__isnull %} disabled{% endif %}>
+                                                {% trans "Owner" %}
+                                            </option>
+                                            <option id="filterBuilderSelect-Queue" value="Queue"{% if query_params.filtering.queue__id__in or query_params.filtering_null.queue__id__isnull %} disabled{% endif %}>
+                                                {% trans "Queue" %}
+                                            </option>
+                                            <option id="filterBuilderSelect-Status" value="Status"{% if query_params.filtering.status__in %} disabled{% endif %}>
+                                                {% trans "Status" %}
+                                            </option>
+                                            <option id="filterBuilderSelect-Keywords" value="Keywords"{% if query_params.search_string %} disabled{% endif %}>
+                                                {% trans "Keywords" %}
+                                            </option>
+                                            <option id="filterBuilderSelect-Dates" value="Dates"{% if query_params.filtering.created__gte or query_params.filtering.created__lte %} disabled{% endif %}>
+                                                {% trans "Date Range" %}
+                                            </option>
+                                            <option id="filterBuilderSelect-KBItems" value="KBItems"{% if query_params.filtering.kbitem__in or query_params.filtering_null.kbitem__isnull %} disabled{% endif %}>
+                                                {% trans "Knowledge base items" %}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
 
                     <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
                          data-parent="#queryAccordion">
                         <div class="card-body">
-                            <form method="get">
-                                <div class="form-group float-right">
-                                    <label for="filterBuilderSelect">{% trans "Add filter" %}:</label>
-                                    <select class="custom-select custom-select-sm mb-0"
-                                            aria-describedby="select-description" name="select" id="filterBuilderSelect"
-                                            onChange="onFilterChange(this.value)">
-                                        <option value="">--</option>
-                                        <option id="filterBuilderSelect-Sort" value="Sort"{% if query_params.sorting %} disabled{% endif %}>
-                                            {% trans "Sorting" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Owner" value="Owner"{% if query_params.filtering.assigned_to__id__in or query_params.filtering_null.assigned_to__id__isnull %} disabled{% endif %}>
-                                            {% trans "Owner" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Queue" value="Queue"{% if query_params.filtering.queue__id__in or query_params.filtering_null.queue__id__isnull %} disabled{% endif %}>
-                                            {% trans "Queue" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Status" value="Status"{% if query_params.filtering.status__in %} disabled{% endif %}>
-                                            {% trans "Status" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Keywords" value="Keywords"{% if query_params.search_string %} disabled{% endif %}>
-                                            {% trans "Keywords" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Dates" value="Dates"{% if query_params.filtering.created__gte or query_params.filtering.created__lte %} disabled{% endif %}>
-                                            {% trans "Date Range" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-KBItems" value="KBItems"{% if query_params.filtering.kbitem__in or query_params.filtering_null.kbitem__isnull %} disabled{% endif %}>
-                                            {% trans "Knowledge base items" %}
-                                        </option>
-                                    </select>
-                                </div>
-                            </form>
+                            
                         </div>
 
                         <form method="get">

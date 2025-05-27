@@ -1,13 +1,22 @@
 {% load i18n humanize %}
-<div class="form-row">
-    <div class="col col-sm-3">
-        <label for='id_query'>{% trans "Keywords" %}</label>
+<div class="alert alert-dismissible fade show py-3 px-4 mb-3 shadow-sm border-0" role="alert" style="background-color: rgba(0,0,0,.06);">
+    <div class="form-row align-items-center">
+        <div class="col-auto pr-0">
+            <label for="id_query" class="col-form-label font-weight-bold mb-0 text-uppercase small text-secondary">
+                <i class="fas fa-search mr-1"></i>{% trans "Keywords" %}
+            </label>
+        </div>
+        <div class="col-auto">
+            <input type="text" name="q" value="{{ query_params.search_string }}" id="id_query" class="form-control form-control-sm border-0 bg-light" />
+        </div>
+        <button type="button" class="filterBuilderRemove close ml-3" data-dismiss="alert" aria-label="{% trans "Close" %}">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-    <div class="col col-sm-3">
-        <input type='text' name='q' value='{{ query_params.search_string }}' id='id_query' />
+    <hr class="my-2">
+    <div class="form-row">
+        <div class="col">
+            <small class="text-muted filterHelp">{% trans "Keywords are case-insensitive, and will be looked for pretty much everywhere possible. Prepend with 'queue:' or 'priority:' to search by queue or priority. You can also use the keyword OR to combine multiple searches." %}</small>
+        </div>
     </div>
-    <div class="col col-sm-6">
-        <button class='filterBuilderRemove btn btn-danger btn-sm float-right'><i class="fas fa-trash-alt"></i></button>
-    </div>
-      <p class='filterHelp'>{% trans "Keywords are case-insensitive, and will be looked for pretty much everywhere possible. Prepend with 'queue:' or 'priority:' to search by queue or priority. You can also use the keyword OR to combine multiple searches." %}</p>
 </div>

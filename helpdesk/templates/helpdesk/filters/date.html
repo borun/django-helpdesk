@@ -1,20 +1,30 @@
 {% load i18n humanize %}
-<div class="form-row">
-    <div class="col col-sm-3">
-          <label for='id_date_from'>{% trans "Date (From)" %}</label>
+<div class="alert alert-dismissible fade show py-3 px-4 mb-3 shadow-sm border-0" role="alert" style="background-color: rgba(0,0,0,.06);">
+    <div class="form-row align-items-center">
+        <div class="col-auto pr-0">
+            <label for="id_date_from" class="col-form-label font-weight-bold mb-0 text-uppercase small text-secondary">
+                <i class="fas fa-calendar-alt mr-1"></i>{% trans "Date (From)" %}
+            </label>
+        </div>
+        <div class="col-auto">
+            <input type="text" name="date_from" value="{{ query_params.filtering.created__gte }}" id="id_date_from" class="form-control form-control-sm border-0 bg-light" />
+        </div>
+        <div class="col-auto pr-0 pl-3">
+            <label for="id_date_to" class="col-form-label font-weight-bold mb-0 text-uppercase small text-secondary">
+                <i class="fas fa-calendar-check mr-1"></i>{% trans "Date (To)" %}
+            </label>
+        </div>
+        <div class="col-auto">
+            <input type="text" name="date_to" value="{{ query_params.filtering.created__lte }}" id="id_date_to" class="form-control form-control-sm border-0 bg-light" />
+        </div>
+        <button type="button" class="filterBuilderRemove close ml-3" data-dismiss="alert" aria-label="{% trans "Close" %}">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-    <div class="col col-sm-3">
-          <input type='text' name='date_from' value='{{ query_params.filtering.created__gte }}' id='id_date_from' />
+    <hr class="my-2">
+    <div class="form-row">
+        <div class="col">
+            <small class="text-muted filterHelp">{% trans "Use YYYY-MM-DD date format, eg 2018-01-30" %}</small>
+        </div>
     </div>
-    <div class="col col-sm-2">
-          <label for='id_date_to'>{% trans "Date (To)" %}</label>
-    </div>
-    <div class="col col-sm-3">
-          <input type='text' name='date_to' value='{{ query_params.filtering.created__lte }}' id='id_date_to' />
-    </div>
-  <div class="col col-sm-1">
-                        <button class='float-right filterBuilderRemove btn btn-danger btn-sm'><i class="fas fa-trash-alt"></i></button>
-    </div>
-
-                        <p class='filterHelp'>{% trans "Use YYYY-MM-DD date format, eg 2018-01-30" %}</p>
 </div>
