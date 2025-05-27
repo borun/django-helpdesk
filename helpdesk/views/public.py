@@ -210,6 +210,76 @@ class SearchForTicketView(TemplateView):
         )
         return context
 
+from django import forms
+from django.core.exceptions import MultipleObjectsReturned
+class PublicUpdateForm(forms.Form):
+    from helpdesk.validators import validate_file_extension
+    comment = forms.CharField(widget=forms.Textarea)
+    new_status = forms.ChoiceField(
+        choices=Ticket.STATUS_CHOICES,
+        required=False,
+        help_text=_("Select a new status for the ticket if applicable."),
+    )
+    public = forms.BooleanField(
+        initial=True,
+        required=False,
+        help_text=_("Check this box to make the comment public."),
+    )
+    if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS:
+        attachment = forms.FileField(
+            widget=forms.FileInput(attrs={"class": "form-control-file"}),
+            required=False,
+            label=_("Attach File"),
+            help_text=_(
+                "You can attach a file to this ticket. "
+                "Only file types such as plain text (.txt), "
+                "a document (.pdf, .docx, or .odt), "
+                "or screenshot (.png or .jpg) may be uploaded."
+            ),
+            validators=[validate_file_extension],
+        )
+
+
+class UpdateTicketFeedbackView(FormView):
+    template_name = "helpdesk/public_view_ticket.html"
+    form_class = PublicUpdateForm
+
+    def form_valid(self, form):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse("helpdesk:login"))
+
+        if not hasattr(settings, "HELPDESK_PUBLIC_TICKET_FEEDBACK"):
+            raise ImproperlyConfigured(
+                "HELPDESK_PUBLIC_TICKET_FEEDBACK setting is not configured."
+            )
+
+        if not settings.HELPDESK_PUBLIC_TICKET_FEEDBACK:
+            raise PermissionDenied(
+                "Public feedback for tickets is not enabled in the settings."
+            )
+
+        try:
+            ticket = Ticket.objects.get(id=self.kwargs.get("pk", ""))
+        except ObjectDoesNotExist:
+            raise PermissionDenied(
+                "Public feedback for tickets is not enabled in the settings."
+            )
+        except MultipleObjectsReturned:
+            raise PermissionDenied(
+                "Public feedback for tickets is not enabled in the settings."
+            )
+        
+        from helpdesk.update_ticket import update_ticket
+        update_ticket(
+            self.request.user,
+            ticket,
+            public=True,
+            comment=form.cleaned_data["comment"],
+            files=form.files.getlist("attachment"),
+            new_status = form.cleaned_data.get("new_status", ticket.status),
+        )
+        return HttpResponseRedirect(ticket.ticket_url)
+        
 
 class ViewTicket(TemplateView):
     template_name = "helpdesk/public_view_ticket.html"

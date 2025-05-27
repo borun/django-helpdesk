@@ -92,7 +92,7 @@
 {% endfor %}
 {% endif %}
 
-<form method='post' action="{% url 'helpdesk:update' ticket.id %}" enctype='multipart/form-data'>
+<form method='post' action="{% url 'helpdesk:public_feedback_add' ticket.id %}" enctype='multipart/form-data'>
     <input type="hidden" name="key" value="{{ key }}" />
     <input type="hidden" name="mail" value="{{ mail }}" />
 
