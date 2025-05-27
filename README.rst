@@ -19,6 +19,10 @@ contributors reaching far beyond Jutda.
 Complete documentation is available in the docs/ directory,
 or online at http://django-helpdesk.readthedocs.org/.
 
+What's new in this version
+--------------------------
+* non-staff user can add comments on their tickets if HELPDESK_PUBLIC_TICKET_FEEDBACK = True is set in the settings
+* Styles (specially for filters, ticket lists and ticket descriptions) are enhanced using copilot AI
 
 Demo Quickstart
 ---------------
