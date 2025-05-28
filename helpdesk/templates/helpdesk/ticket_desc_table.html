@@ -12,7 +12,7 @@
                             <div class="d-flex flex-wrap align-items-center justify-content-between">
                                 <div>
                                     <h3 class="mb-1">{{ ticket.queue.slug }}-{{ ticket.id }}. {{ ticket.title }}</h3>
-                                    <span class="text-muted small">
+                                    <span class="badge badge-info">
                                         {% blocktrans with ticket.queue as queue %}Queue: {{ queue }}{% endblocktrans %}
                                     </span>
                                 </div>
@@ -93,7 +93,7 @@
                                 <a class="btn btn-primary btn-sm rounded-pill" data-toggle="tooltip" href="{% url 'helpdesk:list'%}?q={{ticket.submitter_email}}" title="{% trans 'Display tickets filtered for ' %}{{ ticket.submitter_email }}{% trans ' as a keyword' %}">
                                     <i class="fas fa-search"></i>
                                 </a>
-                                <a class="btn btn-outline-warning btn-sm float-right rounded-pill" data-toggle="tooltip" href="{% url 'helpdesk:email_ignore_add' %}?email={{ ticket.submitter_email }}" title="{% trans 'Add email address for the ticket system to ignore.' %}">
+                                <a class="btn btn-outline-secondary btn-sm float-right rounded-pill" data-toggle="tooltip" href="{% url 'helpdesk:email_ignore_add' %}?email={{ ticket.submitter_email }}" title="{% trans 'Add email address for the ticket system to ignore.' %}">
                                     <i class="fas fa-eye-slash"></i>
                                 </a>
                             {% endif %}
@@ -107,11 +107,11 @@
                         <th class="table-active bg-light">{% trans "Copies To" %}</th>
                         <td>
                             {{ ticketcc_string }}
-                            <a class="btn btn-outline-warning btn-sm float-right rounded-pill" data-toggle="tooltip" href="{% url 'helpdesk:ticket_cc' ticket.id %}" title="{% trans 'Click here to add / remove people who should receive an e-mail whenever this ticket is updated.' %}">
+                            <a class="btn btn-outline-info btn-sm float-right rounded-pill" data-toggle="tooltip" href="{% url 'helpdesk:ticket_cc' ticket.id %}" title="{% trans 'Click here to add / remove people who should receive an e-mail whenever this ticket is updated.' %}">
                                 <i class="fa fa-share"></i>
                             </a>
                             {% if SHOW_SUBSCRIBE %}
-                                <a class="btn btn-outline-warning btn-sm float-right rounded-pill" data-toggle="tooltip" href="?subscribe" title="{% trans 'Click here to subscribe yourself to this ticket, if you want to receive an e-mail whenever this ticket is updated.' %}">
+                                <a class="btn btn-outline-info btn-sm float-right rounded-pill" data-toggle="tooltip" href="?subscribe" title="{% trans 'Click here to subscribe yourself to this ticket, if you want to receive an e-mail whenever this ticket is updated.' %}">
                                     <i class="fas fa-rss-square"></i>
                                 </a>
                             {% endif %}

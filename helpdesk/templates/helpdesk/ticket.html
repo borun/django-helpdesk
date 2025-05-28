@@ -74,11 +74,11 @@
                                 <small>
                                     {% if helpdesk_settings.HELPDESK_SHOW_EDIT_BUTTON_FOLLOW_UP %}
                                         {% if followup.user and request.user == followup.user and not followup.ticketchange_set.all %}
-                                        <a href="{% url 'helpdesk:followup_edit' ticket.id followup.id %}" class='followup-edit'><button type="button" class="btn btn-warning btn-sm float-right"><i class="fas fa-edit"></i></button></a>
+                                        <a href="{% url 'helpdesk:followup_edit' ticket.id followup.id %}" class='followup-edit'><button type="button" class="btn btn-outline-info btn-sm float-right rounded-pill"><i class="fas fa-edit"></i></button></a>
                                         {% endif %}
                                     {% endif %}
                                     {% if user.is_superuser and helpdesk_settings.HELPDESK_SHOW_DELETE_BUTTON_SUPERUSER_FOLLOW_UP %}
-                                        <a href="{% url 'helpdesk:followup_delete' ticket.id followup.id %}" class='followup-edit'><button type="button" class="btn btn-warning btn-sm float-right"><i class="fas fa-trash"></i></button></a>
+                                        <a href="{% url 'helpdesk:followup_delete' ticket.id followup.id %}" class='followup-edit'><button type="button" class="btn btn-outline-warning btn-sm float-right rounded-pill"><i class="fas fa-trash"></i></button></a>
                                     {% endif %}
                                 </small>
                             {% endif %}{% endwith %}
@@ -161,7 +161,7 @@
                         </div>
                         {% endif %}
                         <div class="form-group">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" id="ShowFurtherEditOptions">{% trans "Change Further Details &raquo;" %}</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="ShowFurtherEditOptions">{% trans "Change Further Details &raquo;" %}</button>
                         </div>
                         <div id="FurtherEditOptions" style="display: none;">
                             <div class="form-row">
@@ -244,7 +244,7 @@
                                 <small class="error text-danger">{{ form.errors.attachment }}</small>
                             {% endif %}
                             <div class="form-group">
-                                <button type="button" class="btn btn-outline-secondary btn-sm" id="ShowFileUpload">{% trans "Attach File(s) &raquo;" %}</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="ShowFileUpload">{% trans "Attach File(s) &raquo;" %}</button>
                             </div>
                             <div id="FileUpload" style="display: none;">
                                 <div class="add_file_fields_wrap">
